@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import br.com.pettz.config.CorsConfig;
 import lombok.AllArgsConstructor;
 
 @Configuration
@@ -25,15 +26,17 @@ import lombok.AllArgsConstructor;
 public class SecurityConfiguration implements WebMvcConfigurer {
 
     private final SecurityFilter securityFilter;
+    private final CorsConfig corsConfig;
 
-    private static final String[] METODOS_PUBLICOS = {"/api/v1/auth/register", "/api/v1/auth/login"};
+    private static final String[] PUBLIC_METHODS = {"/api/v1/auth/register", "/api/v1/auth/login"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers(HttpMethod.POST, METODOS_PUBLICOS).permitAll()
+                    req.requestMatchers(HttpMethod.POST, PUBLIC_METHODS).permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN");
                     req.anyRequest().authenticated();
                 })
