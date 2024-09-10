@@ -17,12 +17,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.com.pettz.dtos.request.UserRequest;
 import br.com.pettz.dtos.response.UserResponse;
 import br.com.pettz.models.User;
 import br.com.pettz.repositories.UserRepository;
+import br.com.pettz.services.exceptions.ObjectNotFoundException;
 import br.com.pettz.services.exceptions.ValidationException;
 import br.com.pettz.services.impl.UserServiceImpl;
 
@@ -31,6 +33,7 @@ class UserServiceImplTest {
     
     private static final String EMAIL = "teste@email.com";
     private static final String PASSWORD = "123456";
+    private static final String ERROR_MESSAGE = "User not found";
 
     @Mock
     private UserRepository repository;
@@ -40,6 +43,9 @@ class UserServiceImplTest {
 
     @Mock
     private UserRequest userRequest;
+
+    @Mock
+    private UserDetails userdetails;
 
     @InjectMocks
     private UserServiceImpl service;
@@ -75,5 +81,29 @@ class UserServiceImplTest {
         assertThrows(ValidationException.class, () -> service.register(new UserRequest(EMAIL, PASSWORD)));
 
         verify(repository, never()).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("Should return an object of type UserDetails based on the provided email")
+    void testShouldReturnAnObjectOfTypeUserDetailsBasedOnTheProvidedEmail() {
+
+        given(repository.findByEmail(anyString())).willReturn(userdetails);
+
+        UserDetails userDetails = service.loadUserByUsername(anyString());
+
+        assertNotNull(userDetails);
+        verify(repository, times(1)).findByEmail(anyString());
+    }
+
+    @Test
+    @DisplayName("Should return an ObjectNotFoundException if the user is not found")
+    void testShouldReturnAnObjectNotFoundExceptionIfTheUserIsNotFound() {
+
+        given(repository.findByEmail(anyString())).willThrow(new ObjectNotFoundException(ERROR_MESSAGE));
+
+        ObjectNotFoundException exception = assertThrows(ObjectNotFoundException.class, () -> service.loadUserByUsername(anyString()));
+
+        assertEquals(ERROR_MESSAGE, exception.getMessage());
+        verify(repository, times(1)).findByEmail(anyString());
     }
 }
