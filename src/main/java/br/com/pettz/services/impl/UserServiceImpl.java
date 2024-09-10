@@ -37,9 +37,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         try {
-            log.info("Verifying the user's email");
+            log.info("Verifying the user's email: {}", email);
             return repository.findByEmail(email);   
         } catch (UsernameNotFoundException e) {
+            log.error("User not found.", e.getMessage());
             throw new ObjectNotFoundException("User not found");
         }    
     }

@@ -16,8 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public interface UserControllerSwagger {
     
     @Operation(
-      summary = "Create an user",
-      description = "Create an user. The response, if successful, is a JSON with information about created user.",
+      summary = "Create a user",
+      description = "Create a user. The response, if successful, is a JSON with information about created user.",
       tags = {"Authentication"}
   )
     @ApiResponses(value = {
