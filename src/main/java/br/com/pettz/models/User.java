@@ -1,4 +1,4 @@
-package br.com.pettz.model;
+package br.com.pettz.models;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,8 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.pettz.model.enums.Role;
-
+import br.com.pettz.models.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

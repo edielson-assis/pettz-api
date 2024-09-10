@@ -1,4 +1,4 @@
-package br.com.pettz.model.enums;
+package br.com.pettz.models.enums;
 
 import lombok.Getter;
 
