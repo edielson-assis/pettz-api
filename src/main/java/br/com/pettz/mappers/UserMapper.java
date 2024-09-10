@@ -18,6 +18,7 @@ public class UserMapper {
 
     public static UserResponse toDto(User user) {
         return UserResponse.builder()
+                .idUser(user.getIdUser())
                 .email(user.getEmail()).build();
     }
 }
