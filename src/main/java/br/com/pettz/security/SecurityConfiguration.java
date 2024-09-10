@@ -29,6 +29,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     private final CorsConfig corsConfig;
 
     private static final String[] PUBLIC_METHODS = {"/api/v1/auth/register", "/api/v1/auth/login"};
+    private static final String[] SWAGGER = {"/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,6 +38,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.POST, PUBLIC_METHODS).permitAll()
+                    .requestMatchers(SWAGGER).permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN");
                     req.anyRequest().authenticated();
                 })
