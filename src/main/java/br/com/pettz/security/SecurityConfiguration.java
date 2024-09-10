@@ -26,7 +26,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
 
     private final SecurityFilter securityFilter;
 
-    private static final String[] METODOS_PUBLICOS = {"/api/v1/auth/register"};
+    private static final String[] METODOS_PUBLICOS = {"/api/v1/auth/register", "/api/v1/auth/login"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
