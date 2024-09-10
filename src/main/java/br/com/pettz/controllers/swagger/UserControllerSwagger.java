@@ -1,4 +1,4 @@
-package br.com.pettz.controller.swagger;
+package br.com.pettz.controllers.swagger;
 
 import org.springframework.http.ResponseEntity;
 

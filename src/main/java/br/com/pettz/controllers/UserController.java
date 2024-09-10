@@ -1,4 +1,4 @@
-package br.com.pettz.controller;
+package br.com.pettz.controllers;
 
 import java.net.URI;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.pettz.controller.swagger.UserControllerSwagger;
+import br.com.pettz.controllers.swagger.UserControllerSwagger;
 import br.com.pettz.dtos.request.UserRequest;
 import br.com.pettz.dtos.response.UserResponse;
 import br.com.pettz.models.User;

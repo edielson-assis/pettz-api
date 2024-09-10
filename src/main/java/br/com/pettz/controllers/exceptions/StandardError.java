@@ -1,4 +1,4 @@
-package br.com.pettz.controller.exceptions;
+package br.com.pettz.controllers.exceptions;
 
 import java.io.Serializable;
 import java.time.Instant;
