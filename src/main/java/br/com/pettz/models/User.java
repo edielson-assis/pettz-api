@@ -66,32 +66,32 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return !isAccountNonExpired;
+        return this.isAccountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !isAccountNonLocked;
+        return this.isAccountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !isCredentialsNonExpired;
+        return this.isCredentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return !isEnabled;
+        return this.isEnabled;
     }
 
     public void isNonDisabled() {

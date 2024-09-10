@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1/auth", produces = "application/json")
+@RequestMapping(value = "/api/v1/auth", produces = "application/json")
 public class UserController {
 
     private final UserService service;
