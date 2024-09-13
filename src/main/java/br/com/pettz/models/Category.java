@@ -14,15 +14,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @EqualsAndHashCode(of = "idCategory")
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Builder
 @Getter
 @Entity
@@ -30,6 +33,7 @@ import lombok.NoArgsConstructor;
 public class Category implements Serializable {
     
     @Id
+    @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_category", columnDefinition = "UUID")
     private UUID idCategory;
