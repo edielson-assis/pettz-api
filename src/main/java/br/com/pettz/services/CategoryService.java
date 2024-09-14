@@ -1,18 +1,26 @@
 package br.com.pettz.services;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.com.pettz.dtos.request.CategoryRequest;
+import br.com.pettz.dtos.request.CategoryUpdateRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
+import br.com.pettz.dtos.response.CategoryUpdateResponse;
 
 public interface CategoryService {
     
     CategoryResponse register(CategoryRequest categoryRequest);
 
-    Page <CategoryResponse> findAll(Pageable pageable);
+    CategoryResponse findByName(String name);
 
-    CategoryResponse update(CategoryRequest categoryRequest);
+    Page<CategoryResponse> findAll(Pageable pageable);
 
-    void delete(CategoryRequest categoryRequest);
+    Page<CategoryUpdateResponse> findAllWithId(Pageable pageable);
+
+    CategoryResponse update(UUID idCategory, CategoryUpdateRequest categoryRequest);
+
+    void delete(String name);
 }

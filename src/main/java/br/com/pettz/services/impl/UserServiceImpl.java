@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
     
     private synchronized void validateEmailNotExists(User user) {
-        boolean existeEmail = repository.existsByEmail(user.getEmail());
-        if (existeEmail) {
+        boolean exists = repository.existsByEmail(user.getEmail());
+        if (exists) {
             log.error("Email already exists: {}", user.getEmail());
             throw new ValidationException("Email already exists");
         }

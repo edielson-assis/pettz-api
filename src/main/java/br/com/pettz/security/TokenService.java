@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class TokenService {
+
+    private static final String ISSUER = "Pettz API";
     
     @Value("${api.security.token.secret}")
     private String secret;
@@ -27,7 +29,7 @@ public class TokenService {
             var algorithm = Algorithm.HMAC256(secret);
             log.info("Generating JWT token");
             return JWT.create()
-                    .withIssuer("Pettz API")
+                    .withIssuer(ISSUER)
                     .withSubject(user.getUsername())
                     .withExpiresAt(exprirationToken())
                     .sign(algorithm);
@@ -42,7 +44,7 @@ public class TokenService {
             var algorithm = Algorithm.HMAC256(secret);
             log.info("Verifying JWT token: {}", tokenJWT);
             return JWT.require(algorithm)
-                    .withIssuer("Pettz API")
+                    .withIssuer(ISSUER)
                     .build()
                     .verify(tokenJWT)
                     .getSubject();
