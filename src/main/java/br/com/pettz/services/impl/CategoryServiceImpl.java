@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.pettz.dtos.request.CategoryRequest;
-import br.com.pettz.dtos.request.CategoryUpdateRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
 import br.com.pettz.dtos.response.CategoryUpdateResponse;
 import br.com.pettz.mappers.CategoryMapper;
@@ -60,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse update(UUID idCategory, CategoryUpdateRequest categoryRequest) {
+    public CategoryResponse update(UUID idCategory, CategoryRequest categoryRequest) {
         Category category = findById(idCategory);
         CategoryMapper.toUpdateEntity(category, categoryRequest);
         validateCategoryNotExists(category);

@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.pettz.dtos.request.CategoryRequest;
-import br.com.pettz.dtos.request.CategoryUpdateRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
 import br.com.pettz.dtos.response.CategoryUpdateResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -88,7 +87,7 @@ public interface CategoryControllerSwagger {
         @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content),
         @ApiResponse(responseCode = "409", description = "Conflict - Category's name already exists", content = @Content)
     })
-    ResponseEntity<CategoryResponse> update(UUID categoryId, CategoryUpdateRequest categoryRequest);
+    ResponseEntity<CategoryResponse> update(UUID categoryId, CategoryRequest categoryRequest);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)}, 

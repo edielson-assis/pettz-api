@@ -1,7 +1,6 @@
 package br.com.pettz.mappers;
 
 import br.com.pettz.dtos.request.CategoryRequest;
-import br.com.pettz.dtos.request.CategoryUpdateRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
 import br.com.pettz.dtos.response.CategoryUpdateResponse;
 import br.com.pettz.models.Category;
@@ -26,7 +25,7 @@ public class CategoryMapper {
                 .name(category.getName()).build();
     }
 
-    public static void toUpdateEntity(Category category, CategoryUpdateRequest categoryRequest) {
+    public static void toUpdateEntity(Category category, CategoryRequest categoryRequest) {
         category.setName(categoryRequest.name());
     }
 }

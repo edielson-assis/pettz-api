@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pettz.controllers.swagger.CategoryControllerSwagger;
 import br.com.pettz.dtos.request.CategoryRequest;
-import br.com.pettz.dtos.request.CategoryUpdateRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
 import br.com.pettz.dtos.response.CategoryUpdateResponse;
 import br.com.pettz.services.CategoryService;
@@ -64,7 +63,7 @@ public class CategoryController implements CategoryControllerSwagger {
     @Transactional
     @PatchMapping(path = "/admin/update/{categoryId}")
     @PreAuthorize("hasAuthority('Admin')")
-    public ResponseEntity<CategoryResponse> update(@PathVariable UUID categoryId, @Valid @RequestBody CategoryUpdateRequest categoryRequest) {
+    public ResponseEntity<CategoryResponse> update(@PathVariable UUID categoryId, @Valid @RequestBody CategoryRequest categoryRequest) {
         var category = service.update(categoryId, categoryRequest);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }

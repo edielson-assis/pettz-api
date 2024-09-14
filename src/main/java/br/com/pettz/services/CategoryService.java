@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.com.pettz.dtos.request.CategoryRequest;
-import br.com.pettz.dtos.request.CategoryUpdateRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
 import br.com.pettz.dtos.response.CategoryUpdateResponse;
 
@@ -20,7 +19,7 @@ public interface CategoryService {
 
     Page<CategoryUpdateResponse> findAllWithId(Pageable pageable);
 
-    CategoryResponse update(UUID idCategory, CategoryUpdateRequest categoryRequest);
+    CategoryResponse update(UUID idCategory, CategoryRequest categoryRequest);
 
     void delete(String name);
 }
