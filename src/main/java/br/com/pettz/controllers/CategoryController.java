@@ -1,5 +1,8 @@
 package br.com.pettz.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pettz.controllers.hateoas.CategoryModel;
 import br.com.pettz.controllers.swagger.CategoryControllerSwagger;
 import br.com.pettz.dtos.request.CategoryRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
@@ -42,15 +46,19 @@ public class CategoryController implements CategoryControllerSwagger {
     }
 
     @GetMapping(path = "/get/{name}")
-    public ResponseEntity<CategoryResponse> findByName(@PathVariable String name) {
+    public ResponseEntity<CategoryModel> findByName(@PathVariable String name) {
         var category = service.findByName(name);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        var categoryModel = new CategoryModel(category);
+        categoryModel.add(linkTo(methodOn(CategoryController.class).findAll(Pageable.unpaged())).withRel("Categories List"));
+        return new ResponseEntity<>(categoryModel, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Page<CategoryResponse>> findAll(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
+    public ResponseEntity<Page<CategoryModel>> findAll(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
         var categories = service.findAll(pageable);
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+        var categoryModels = categories.map(CategoryModel::new);
+        categoryModels.map(category -> category.add(linkTo(methodOn(CategoryController.class).findByName(category.getCategory().name())).withSelfRel()));
+        return new ResponseEntity<>(categoryModels, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin")
