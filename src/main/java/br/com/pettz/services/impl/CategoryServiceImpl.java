@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse register(CategoryRequest categoryRequest) {
         Category category = CategoryMapper.toEntity(categoryRequest);
         validateCategoryExists(category);
-        log.info("Registering a new Category");
+        log.info("Registering a new Category: {}", category);
         return CategoryMapper.toDto(repository.save(category));
     }
 
