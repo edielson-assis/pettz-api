@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.pettz.controllers.hateoas.CategoryModel;
 import br.com.pettz.controllers.swagger.CategoryControllerSwagger;
 import br.com.pettz.dtos.request.CategoryRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
@@ -40,30 +40,32 @@ public class CategoryController implements CategoryControllerSwagger {
     @Transactional
     @PostMapping(path = "/admin/register")
     @PreAuthorize("hasAuthority('Admin')")
+    @Override
     public ResponseEntity<CategoryResponse> register(@Valid @RequestBody CategoryRequest categoryRequest) {
         var category = service.register(categoryRequest);
         return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/get/{name}")
-    public ResponseEntity<CategoryModel> findByName(@PathVariable String name) {
+    @Override
+    public ResponseEntity<CategoryResponse> findByName(@PathVariable String name) {
         var category = service.findByName(name);
-        var categoryModel = new CategoryModel(category);
-        categoryModel.add(linkTo(methodOn(CategoryController.class).findAll(Pageable.unpaged())).withRel("Categories List"));
-        return new ResponseEntity<>(categoryModel, HttpStatus.OK);
+        category.add(linkTo(methodOn(CategoryController.class).findAll(Pageable.unpaged())).withRel("Categories List"));
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Page<CategoryModel>> findAll(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
+    @Override
+    public ResponseEntity<Page<CategoryResponse>> findAll(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
         var categories = service.findAll(pageable);
-        var categoryModels = categories.map(CategoryModel::new);
-        categoryModels.map(category -> category.add(linkTo(methodOn(CategoryController.class).findByName(category.getCategory().name())).withSelfRel()));
-        return new ResponseEntity<>(categoryModels, HttpStatus.OK);
+        categories.map(category -> category.add(linkTo(methodOn(CategoryController.class).findByName(category.getName())).withSelfRel()));
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin")
     @PreAuthorize("hasAuthority('Admin')")
-    public ResponseEntity<Page<CategoryUpdateResponse>> findAllWithId(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
+    @Override
+    public ResponseEntity<Page<CategoryUpdateResponse>> findAllWithId(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
         var categories = service.findAllWithId(pageable);
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
@@ -71,6 +73,7 @@ public class CategoryController implements CategoryControllerSwagger {
     @Transactional
     @PatchMapping(path = "/admin/update/{categoryId}")
     @PreAuthorize("hasAuthority('Admin')")
+    @Override
     public ResponseEntity<CategoryResponse> update(@PathVariable UUID categoryId, @Valid @RequestBody CategoryRequest categoryRequest) {
         var category = service.update(categoryId, categoryRequest);
         return new ResponseEntity<>(category, HttpStatus.OK);
@@ -79,6 +82,7 @@ public class CategoryController implements CategoryControllerSwagger {
     @Transactional
     @DeleteMapping(path = "/admin/delete/{name}")
     @PreAuthorize("hasAuthority('Admin')")
+    @Override
     public ResponseEntity<Void> delete(@PathVariable String name) {
         service.delete(name);
         return ResponseEntity.noContent().build();

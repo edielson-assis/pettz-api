@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import br.com.pettz.controllers.hateoas.CategoryModel;
 import br.com.pettz.dtos.request.CategoryRequest;
 import br.com.pettz.dtos.response.CategoryResponse;
 import br.com.pettz.dtos.response.CategoryUpdateResponse;
@@ -48,7 +47,7 @@ public interface CategoryControllerSwagger {
         @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content),
         @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content)
     })
-    ResponseEntity<CategoryModel> findByName(String name);
+    ResponseEntity<CategoryResponse> findByName(String name);
 
     @Operation(
       summary = "Find all categories",
@@ -59,7 +58,7 @@ public interface CategoryControllerSwagger {
         @ApiResponse(responseCode = "200", description = "Successful get category", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))})
     })
-    ResponseEntity<Page<CategoryModel>> findAll(Pageable pageable);
+    ResponseEntity<Page<CategoryResponse>> findAll(Pageable pageable);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)},
