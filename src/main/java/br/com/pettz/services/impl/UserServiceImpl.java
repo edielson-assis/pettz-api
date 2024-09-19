@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder encoder;
 
     @Override
-    public UserResponse register(UserRequest userRequest) {
+    public UserResponse registerUser(UserRequest userRequest) {
         User user = UserMapper.toEntity(userRequest);
         validateEmailNotExists(user);
         encryptPassword(user);

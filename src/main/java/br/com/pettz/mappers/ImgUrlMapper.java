@@ -12,7 +12,7 @@ public class ImgUrlMapper {
         return ImgUrlResponse.builder().imgUrl(url.getUrl()).build();
     }
 
-    public static ImgUrlWithIdResponse toUpdateDto(ImgUrl url) {
+    public static ImgUrlWithIdResponse toImgUrlWithIdDto(ImgUrl url) {
         return ImgUrlWithIdResponse.builder()
                 .idImgUrl(url.getIdImgUrl())
                 .imgUrl(url.getUrl()).build();

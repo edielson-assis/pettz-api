@@ -45,7 +45,7 @@ public class ProductMapper {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .imgUrls(imgUrlsWithId(product.getImgUrls()))
-                .colors(colorWithId(product.getColors())).build();
+                .colors(colorsWithId(product.getColors())).build();
     }
 
     public static void toUpdateEntity(Product product, ProductUpdateRequest productRequest) {
@@ -63,10 +63,10 @@ public class ProductMapper {
     }
 
     private static Set<ImgUrlWithIdResponse> imgUrlsWithId(Set<ImgUrl> imgUrls) {
-        return imgUrls.stream().map(ImgUrlMapper::toUpdateDto).collect(Collectors.toSet());
+        return imgUrls.stream().map(ImgUrlMapper::toImgUrlWithIdDto).collect(Collectors.toSet());
     }
 
-    private static Set<ColorWithIdResponse> colorWithId(Set<Color> colors) {
+    private static Set<ColorWithIdResponse> colorsWithId(Set<Color> colors) {
         return colors.stream().map(ColorMapper::toColorWithIdDto).collect(Collectors.toSet());
     }
 }

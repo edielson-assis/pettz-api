@@ -31,8 +31,8 @@ public class UserController implements UserControllerSwagger {
     
     @Transactional
     @PostMapping(path = "/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest userRequest) {
-        var user = service.register(userRequest);
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRequest userRequest) {
+        var user = service.registerUser(userRequest);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 

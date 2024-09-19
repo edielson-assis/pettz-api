@@ -7,7 +7,7 @@ import br.com.pettz.dtos.response.UserResponse;
 
 public interface UserService {
     
-    UserResponse register(UserRequest userRequest);
+    UserResponse registerUser(UserRequest userRequest);
 
     UserDetails loadUserByUsername(String email);
 }
