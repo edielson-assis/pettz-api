@@ -6,6 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 @Schema(name = "Register Color Request DTO", description = "DTO to register a new color")
 public record ColorRequest(
     
-    @Schema(description = "Color name", example = "Black")
+    @Schema(description = "Color name", example = "Light blue")
     @NotBlank(message = "Name is required") 
     String name) {}

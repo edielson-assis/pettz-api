@@ -9,5 +9,5 @@ import br.com.pettz.models.Color;
 
 public interface ColorRepository extends JpaRepository<Color, UUID> {
 
-    Optional<Color> findByNameIgnoreCase(String name);
+    Optional<Color> findByColorIgnoreCase(String name);
 }
