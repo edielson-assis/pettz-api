@@ -65,7 +65,7 @@ class UserServiceImplTest {
 
         given(repository.save(user)).willReturn(user);
 
-        UserResponse savedUser = service.register(userRequest);
+        UserResponse savedUser = service.registerUser(userRequest);
 
         assertNotNull(savedUser);
         assertEquals(EMAIL, savedUser.email());
@@ -78,7 +78,7 @@ class UserServiceImplTest {
 
         given(repository.existsByEmail(anyString())).willReturn(true);
 
-        assertThrows(ValidationException.class, () -> service.register(new UserRequest(EMAIL, PASSWORD)));
+        assertThrows(ValidationException.class, () -> service.registerUser(new UserRequest(EMAIL, PASSWORD)));
 
         verify(repository, never()).save(any(User.class));
     }
