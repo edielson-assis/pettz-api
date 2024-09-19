@@ -7,8 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.pettz.dtos.request.CategoryRequest;
+import br.com.pettz.dtos.response.CategoryProductResponse;
 import br.com.pettz.dtos.response.CategoryResponse;
-import br.com.pettz.dtos.response.CategoryUpdateResponse;
+import br.com.pettz.dtos.response.CategoryWithIdResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,7 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Categories", description = "Category of products")
+@Tag(name = "Categories", description = "Category's methods")
 public interface CategoryControllerSwagger {
 
     static final String SECURITY_SCHEME_KEY = "bearer-key";
@@ -34,7 +35,7 @@ public interface CategoryControllerSwagger {
         @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content)
     })
-    ResponseEntity<CategoryResponse> register(CategoryRequest categoryRequest);
+    ResponseEntity<CategoryResponse> registerNewCategory(CategoryRequest categoryRequest);
 
     @Operation(
       summary = "Find category by name",
@@ -44,10 +45,9 @@ public interface CategoryControllerSwagger {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful get category", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))}),
-        @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content),
         @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content)
     })
-    ResponseEntity<CategoryResponse> findByName(String name);
+    ResponseEntity<CategoryProductResponse> findCategoryByNameWithProducts(String name);
 
     @Operation(
       summary = "Find all categories",
@@ -58,7 +58,7 @@ public interface CategoryControllerSwagger {
         @ApiResponse(responseCode = "200", description = "Successful get category", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))})
     })
-    ResponseEntity<Page<CategoryResponse>> findAll(Pageable pageable);
+    ResponseEntity<Page<CategoryResponse>> findAllCategories(Pageable pageable);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)},
@@ -71,7 +71,7 @@ public interface CategoryControllerSwagger {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))}),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content)
     })
-    ResponseEntity<Page<CategoryUpdateResponse>> findAllWithId(Pageable pageable);
+    ResponseEntity<Page<CategoryWithIdResponse>> findAllCategoriesWithId(Pageable pageable);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)}, 
@@ -87,7 +87,7 @@ public interface CategoryControllerSwagger {
         @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content),
         @ApiResponse(responseCode = "409", description = "Conflict - Category's name already exists", content = @Content)
     })
-    ResponseEntity<CategoryResponse> update(UUID categoryId, CategoryRequest categoryRequest);
+    ResponseEntity<CategoryResponse> updateCategoryById(UUID categoryId, CategoryRequest categoryRequest);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)}, 
@@ -96,11 +96,11 @@ public interface CategoryControllerSwagger {
       tags = {"Categories"}
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successful delete category", content = {
+        @ApiResponse(responseCode = "204", description = "Successful delete category", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))}),
         @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content),
         @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content)
     })
-    ResponseEntity<Void> delete(String name);
+    ResponseEntity<Void> deleteCategory(String name);
 }

@@ -1,5 +1,7 @@
 package br.com.pettz.services.impl;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,10 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.pettz.dtos.request.CategoryRequest;
+import br.com.pettz.dtos.response.CategoryProductResponse;
 import br.com.pettz.dtos.response.CategoryResponse;
-import br.com.pettz.dtos.response.CategoryUpdateResponse;
+import br.com.pettz.dtos.response.CategoryWithIdResponse;
 import br.com.pettz.mappers.CategoryMapper;
 import br.com.pettz.models.Category;
+import br.com.pettz.models.Product;
 import br.com.pettz.repositories.CategoryRepository;
 import br.com.pettz.services.CategoryService;
 import br.com.pettz.services.exceptions.DataBaseException;
@@ -30,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_ALREADY_EXISTS = "Category already exists";
 
     @Override
-    public CategoryResponse register(CategoryRequest categoryRequest) {
+    public CategoryResponse registerNewCategory(CategoryRequest categoryRequest) {
         Category category = CategoryMapper.toEntity(categoryRequest);
         validateCategoryExists(category);
         log.info("Registering a new Category: {}", category);
@@ -38,29 +42,29 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse findByName(String category) {
+    public CategoryProductResponse findCategoryByNameWithProducts(String category) {
         log.info("Searching for category with name: {}", category);
-        return repository.findByNameIgnoreCase(category).map(CategoryMapper::toDto).orElseThrow(() -> {
+        return repository.findByNameIgnoreCase(category).map(CategoryMapper::toCategoryProductDto).orElseThrow(() -> {
             log.error(CATEGORY_NOT_FOUND.concat(": {}"), category);
             return new ObjectNotFoundException(CATEGORY_NOT_FOUND);
         });
     }
 
     @Override
-    public Page<CategoryResponse> findAll(Pageable pageable) {
+    public Page<CategoryResponse> findAllCategories(Pageable pageable) {
         log.info("Searching all Categories");
         return repository.findAll(pageable).map(CategoryMapper::toDto);
     }
 
     @Override
-    public Page<CategoryUpdateResponse> findAllWithId(Pageable pageable) {
+    public Page<CategoryWithIdResponse> findAllCategoriesWithId(Pageable pageable) {
         log.info("Searching all Categories");
-        return repository.findAll(pageable).map(CategoryMapper::toUpdateDto);
+        return repository.findAll(pageable).map(CategoryMapper::toCategoryWithIdDto);
     }
 
     @Override
-    public CategoryResponse update(UUID idCategory, CategoryRequest categoryRequest) {
-        Category category = findById(idCategory);
+    public CategoryResponse updateCategoryById(UUID idCategory, CategoryRequest categoryRequest) {
+        Category category = findByCategory(idCategory);
         CategoryMapper.toUpdateEntity(category, categoryRequest);
         validateCategoryNotExists(category);
         log.info("Updating Category with name: {}", category.getName());
@@ -68,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void delete(String categoryRequest) {
+    public void deleteCategory(String categoryRequest) {
         Category category = findByCategory(categoryRequest);
         try {
             log.info("Attempting to delete category with name: {}", category.getName());
@@ -80,6 +84,25 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    @Override
+    public synchronized Set<Category> findByCategories(Set<String> categories, Product product) {
+        Set<Category> processedCategories = new HashSet<>();
+
+        for (String categoryName : categories) {
+            log.info("Searching for category: {}", categoryName);
+            Category existingCategory = repository.findByNameIgnoreCase(categoryName).orElseGet(() -> {
+                log.info("Registering a new category: {}", categoryName);
+                return repository.save(new Category(UUID.randomUUID(), categoryName));
+            });
+            processedCategories.add(existingCategory);
+        }
+
+        for (Category category : processedCategories) {
+            category.getProducts().add(product);
+        }
+        return processedCategories;
+    }
+
     private synchronized void validateCategoryExists(Category category) {
         boolean exists = repository.existsByName(category.getName());
         if (exists) {
@@ -87,7 +110,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ValidationException(CATEGORY_ALREADY_EXISTS);
         }
     }
-    
+
     private synchronized void validateCategoryNotExists(Category category) {
         boolean exists = repository.existsByNameAndIdCategoryNot(category.getName(), category.getIdCategory());
         if (exists) {
@@ -104,7 +127,7 @@ public class CategoryServiceImpl implements CategoryService {
         });
     }
 
-    private Category findById(UUID categoryId) {
+    private Category findByCategory(UUID categoryId) {
         log.info("Searching for category with ID: {}", categoryId);
         return repository.findById(categoryId).orElseThrow(() -> {
             log.error(CATEGORY_NOT_FOUND.concat(": {}"), categoryId);

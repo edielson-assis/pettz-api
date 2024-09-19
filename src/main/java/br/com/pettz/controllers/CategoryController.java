@@ -23,8 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pettz.controllers.swagger.CategoryControllerSwagger;
 import br.com.pettz.dtos.request.CategoryRequest;
+import br.com.pettz.dtos.response.CategoryProductResponse;
 import br.com.pettz.dtos.response.CategoryResponse;
-import br.com.pettz.dtos.response.CategoryUpdateResponse;
+import br.com.pettz.dtos.response.CategoryWithIdResponse;
 import br.com.pettz.services.CategoryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -41,32 +42,33 @@ public class CategoryController implements CategoryControllerSwagger {
     @PostMapping(path = "/admin/register")
     @PreAuthorize("hasAuthority('Admin')")
     @Override
-    public ResponseEntity<CategoryResponse> register(@Valid @RequestBody CategoryRequest categoryRequest) {
-        var category = service.register(categoryRequest);
+    public ResponseEntity<CategoryResponse> registerNewCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
+        var category = service.registerNewCategory(categoryRequest);
         return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/get/{name}")
     @Override
-    public ResponseEntity<CategoryResponse> findByName(@PathVariable String name) {
-        var category = service.findByName(name);
-        category.add(linkTo(methodOn(CategoryController.class).findAll(Pageable.unpaged())).withRel("Categories List"));
+    public ResponseEntity<CategoryProductResponse> findCategoryByNameWithProducts(@PathVariable String name) {
+        var category = service.findCategoryByNameWithProducts(name);
+        category.add(linkTo(methodOn(CategoryController.class).findAllCategories(Pageable.unpaged())).withRel("Categories List"));
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
     @GetMapping
     @Override
-    public ResponseEntity<Page<CategoryResponse>> findAll(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
-        var categories = service.findAll(pageable);
-        categories.map(category -> category.add(linkTo(methodOn(CategoryController.class).findByName(category.getName())).withSelfRel()));
+    public ResponseEntity<Page<CategoryResponse>> findAllCategories(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
+        var categories = service.findAllCategories(pageable);
+        categories.map(category -> category.add(linkTo(methodOn(CategoryController.class).findCategoryByNameWithProducts(category.getName())).withSelfRel()));
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping(path = "/admin")
     @PreAuthorize("hasAuthority('Admin')")
     @Override
-    public ResponseEntity<Page<CategoryUpdateResponse>> findAllWithId(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
-        var categories = service.findAllWithId(pageable);
+    public ResponseEntity<Page<CategoryWithIdResponse>> findAllCategoriesWithId(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
+        var categories = service.findAllCategoriesWithId(pageable);
+        categories.map(category -> category.add(linkTo(methodOn(CategoryController.class).findCategoryByNameWithProducts(category.getName())).withSelfRel()));
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
@@ -74,8 +76,8 @@ public class CategoryController implements CategoryControllerSwagger {
     @PatchMapping(path = "/admin/update/{categoryId}")
     @PreAuthorize("hasAuthority('Admin')")
     @Override
-    public ResponseEntity<CategoryResponse> update(@PathVariable UUID categoryId, @Valid @RequestBody CategoryRequest categoryRequest) {
-        var category = service.update(categoryId, categoryRequest);
+    public ResponseEntity<CategoryResponse> updateCategoryById(@PathVariable UUID categoryId, @Valid @RequestBody CategoryRequest categoryRequest) {
+        var category = service.updateCategoryById(categoryId, categoryRequest);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
@@ -83,8 +85,8 @@ public class CategoryController implements CategoryControllerSwagger {
     @DeleteMapping(path = "/admin/delete/{name}")
     @PreAuthorize("hasAuthority('Admin')")
     @Override
-    public ResponseEntity<Void> delete(@PathVariable String name) {
-        service.delete(name);
+    public ResponseEntity<Void> deleteCategory(@PathVariable String name) {
+        service.deleteCategory(name);
         return ResponseEntity.noContent().build();
     }
 }
