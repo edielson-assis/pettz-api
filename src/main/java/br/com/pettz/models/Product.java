@@ -18,26 +18,31 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @EqualsAndHashCode(of = "idProduct")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Setter
 @Getter
 @Entity
 @Table(name = "products")
 public class Product implements Serializable {
 
     @Id
+    @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_product", columnDefinition = "UUID")
     private UUID idProduct;
 
+    @Setter(AccessLevel.NONE)
     @Column(nullable = false, unique = true)
     private String code;
 
