@@ -9,5 +9,5 @@ import br.com.pettz.models.ImgUrl;
 
 public interface ImgUrlRepository extends JpaRepository<ImgUrl, UUID> {
     
-    Optional<ImgUrl> findByNameIgnoreCase(String name);
+    Optional<ImgUrl> findByUrlIgnoreCase(String url);
 }
