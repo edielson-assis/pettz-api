@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    private static final String[] ALLOWED_URLS = {"http://localhost:4200", "http://localhost:3000"};
+    private static final String[] ALLOWED_URLS = {"http://localhost:4200", "http://localhost:3000", "https://pettz-webapp.vercel.app/**"};
     private static final String[] ALLOWED_METHODS = {"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD", "TRACE", "CONNECT"};
     private static final String[] ALLOWED_HEADERS = {"Content-Type", "Authorization", "Access-Control-Allow-Origin"};
     private static final String ALL_ENDPOINTS = "/**";

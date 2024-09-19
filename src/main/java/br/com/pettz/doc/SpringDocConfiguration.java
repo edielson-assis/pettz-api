@@ -23,8 +23,8 @@ public class SpringDocConfiguration {
                                         .bearerFormat("JWT")))
                 .info(new Info()
                         .title("Pettz API")
-                        .version("0.0.1")
-                        .description("Rest API of the Pettz application. The API allows users to purchase products for pets.")
+                        .version("1.0.0")
+                        .description("RestFull API of the Pettz application. The API allows users to purchase products for pets.")
                         .contact(new Contact()
                                 .name("Edielson Assis")
                                 .email("grizos.ed@gmail.com")));

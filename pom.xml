@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>br.com</groupId>
 	<artifactId>pettz</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>pettz</name>
-	<description>Demo project for Spring Boot</description>
+	<description>RestFull API of the Pettz application</description>
 	<url/>
 	<licenses>
 		<license/>

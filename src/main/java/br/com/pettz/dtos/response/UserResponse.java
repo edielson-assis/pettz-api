@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
-@Schema(name = "Register User Response DTO", description = "DTO to log in and register a new user")
+@Schema(name = "Get User Response DTO", description = "DTO to get an existing user")
 public record UserResponse(
     
     @Schema(description = "User email", example = "maria@example.com")
