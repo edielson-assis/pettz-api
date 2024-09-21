@@ -28,8 +28,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     private final SecurityFilter securityFilter;
     private final CorsConfig corsConfig;
 
-    private static final String[] PUBLIC_METHODS = {"/api/v1/auth/register", "/api/v1/auth/login"};
+    private static final String AUTHORITY_NAME = "Admin";
+    private static final String PUBLIC_POST_METHODS = "/api/v1/auth/**";
     private static final String[] SWAGGER = {"/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"};
+    private static final String[] PUBLIC_GET_METHODS = {"/api/v1/categories/**", "/api/v1/products/**"};
+    private static final String[] ADMIN_METHODS = {"/api/v1/categories/admin/**", "/api/v1/products/admin/**"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,9 +40,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers(HttpMethod.POST, PUBLIC_METHODS).permitAll()
+                    req.requestMatchers(HttpMethod.POST, PUBLIC_POST_METHODS).permitAll()
+                    .requestMatchers(HttpMethod.GET, PUBLIC_GET_METHODS).permitAll()
                     .requestMatchers(SWAGGER).permitAll()
-                    .requestMatchers("/admin/**").hasRole("ADMIN");
+                    .requestMatchers(ADMIN_METHODS).hasAuthority(AUTHORITY_NAME)
+                    .requestMatchers("/admin/**").hasAuthority(AUTHORITY_NAME);
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

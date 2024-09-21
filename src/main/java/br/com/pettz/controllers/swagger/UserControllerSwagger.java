@@ -19,24 +19,23 @@ public interface UserControllerSwagger {
       summary = "Create a user",
       description = "Create a user. The response, if successful, is a JSON with information about created user.",
       tags = {"Authentication"}
-  )
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Successful create user", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)) }),
-            @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content)
+      @ApiResponse(responseCode = "201", description = "Successful create user", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)) }),
+      @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content)
     })
-    ResponseEntity<UserResponse> register(UserRequest userRequest);
+    ResponseEntity<UserResponse> registerUser(UserRequest userRequest);
 
     @Operation(
       summary = "Perform authentication",
       description = "Endpoint to user perform authentication. The response, if successful, is a JSON with JWT.",
       tags = {"Authentication"}
-  )
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful user authenticatio.", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = TokenJWT.class)) }),
-            @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid email or password", content = @Content)
+      @ApiResponse(responseCode = "200", description = "Successful user authentication.", content = {
+              @Content(mediaType = "application/json", schema = @Schema(implementation = TokenJWT.class)) }),
+      @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid email or password", content = @Content)
     })
     ResponseEntity<TokenJWT> login(UserRequest user);
 }

@@ -77,9 +77,9 @@ class UserControllerTest {
     void shouldCreateAUserAndReturnAnObjectOfTypeUserResponse() throws Exception {
 
         User user = UserMapper.toEntity(userRequest);
-        given(service.register(any(UserRequest.class))).willReturn(UserMapper.toDto(user));
+        given(service.registerUser(any(UserRequest.class))).willReturn(UserMapper.toDto(user));
 
-        UserResponse userResponse = service.register(userRequest);
+        UserResponse userResponse = service.registerUser(userRequest);
 
         ResultActions response = mockMvc.perform(post(USER_REGISTER_URI).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest)));

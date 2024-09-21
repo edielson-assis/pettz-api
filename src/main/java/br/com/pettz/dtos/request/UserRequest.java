@@ -4,10 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-@Schema(name = "Register User Request DTO", description = "DTO for login and registering a new user")
+@Schema(name = "Register User Request DTO", description = "DTO to log in and register a new user")
 public record UserRequest(
 
-    @Schema(description = "Email of the user.", example = "maria@example.com")
+    @Schema(description = "User email", example = "maria@example.com")
     @NotBlank(message = "Email is required") 
     @Email(message = "Invalid email")
     String email,
