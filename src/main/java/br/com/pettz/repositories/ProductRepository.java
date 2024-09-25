@@ -17,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Optional<Product> findByNameIgnoreCase(@Param("name") String name);
+
+    boolean existsByCode(String code);
 }

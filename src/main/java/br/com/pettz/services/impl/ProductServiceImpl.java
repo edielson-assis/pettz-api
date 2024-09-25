@@ -46,11 +46,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse registerNewProduct(ProductRequest productRequest) {
         Product product = ProductMapper.toEntity(productRequest);
         validateProductExists(product);
+        validateCodeExists(product);
         product = repository.save(product);
         product.getImgUrls().addAll(imgUrls(productRequest, product));
         product.getColors().addAll(colors(productRequest, product));
         product.getCategories().addAll(categories(productRequest, product));
-        log.info("Registering a new product: {}", product);
+        log.info("Registering a new product: {}", product.getName());
         return ProductMapper.toDto(repository.save(product));
     }
 
@@ -109,6 +110,14 @@ public class ProductServiceImpl implements ProductService {
         if (exists) {
             log.error(PRODUCT_ALREADY_EXISTS.concat(": {}"), product.getName());
             throw new ValidationException(PRODUCT_ALREADY_EXISTS);
+        }
+    }
+
+    private synchronized void validateCodeExists(Product product) {
+        boolean exists = repository.existsByCode(product.getCode());
+        if (exists) {
+            log.error("Code already exists: {}", product.getCode());
+            throw new ValidationException("Code already exists: " + product.getCode());
         }
     }
 
