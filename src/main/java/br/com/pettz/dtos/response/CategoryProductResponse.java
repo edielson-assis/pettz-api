@@ -15,7 +15,7 @@ import lombok.Getter;
 @Schema(name = "Get Category with product Response DTO", description = "DTO to get a existing Category")
 public class CategoryProductResponse extends RepresentationModel<CategoryProductResponse> {
 
-    @Schema(description = "Category name", example = "Electronics")
+    @Schema(description = "Category name", example = "Pet Accessories")
     private String name;
 
     @Schema(description = "List of categories")

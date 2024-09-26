@@ -18,6 +18,6 @@ public class CategoryWithIdResponse extends RepresentationModel<CategoryWithIdRe
     @Schema(description = "Category ID", example = "99ac1044-0c6e-4950-bfd4-76a2f3e074ae")
     private UUID idCategory;
 
-    @Schema(description = "Category name", example = "Electronics")
+    @Schema(description = "Category name", example = "Pet Accessories")
     private String name;
 }

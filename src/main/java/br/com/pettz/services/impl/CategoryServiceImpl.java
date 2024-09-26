@@ -104,7 +104,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private synchronized void validateCategoryExists(Category category) {
-        boolean exists = repository.existsByName(category.getName());
+        boolean exists = repository.existsByNameIgnoreCase(category.getName());
         if (exists) {
             log.error(CATEGORY_ALREADY_EXISTS.concat(": {}"), category.getName());
             throw new ValidationException(CATEGORY_ALREADY_EXISTS);

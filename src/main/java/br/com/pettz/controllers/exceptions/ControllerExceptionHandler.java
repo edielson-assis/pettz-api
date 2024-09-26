@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import br.com.pettz.security.exception.SecurityException;
 import br.com.pettz.services.exceptions.DataBaseException;
 import br.com.pettz.services.exceptions.ObjectNotFoundException;
 import br.com.pettz.services.exceptions.ValidationException;

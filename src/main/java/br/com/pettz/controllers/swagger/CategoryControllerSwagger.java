@@ -55,7 +55,7 @@ public interface CategoryControllerSwagger {
       tags = {"Categories"}
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successful get category", content = {
+        @ApiResponse(responseCode = "200", description = "Successful get all categories", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))})
     })
     ResponseEntity<Page<CategoryResponse>> findAllCategories(Pageable pageable);
@@ -67,7 +67,7 @@ public interface CategoryControllerSwagger {
       tags = {"Categories"}
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successful get category", content = {
+        @ApiResponse(responseCode = "200", description = "Successful get all categories", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))}),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content)
     })
@@ -96,9 +96,7 @@ public interface CategoryControllerSwagger {
       tags = {"Categories"}
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Successful delete category", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))}),
-        @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content),
+        @ApiResponse(responseCode = "204", description = "Successful delete category", content = @Content),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content),
         @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content)
     })

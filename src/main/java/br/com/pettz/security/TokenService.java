@@ -12,6 +12,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import br.com.pettz.security.exception.SecurityException;
 import br.com.pettz.models.User;
 import lombok.extern.slf4j.Slf4j;
 

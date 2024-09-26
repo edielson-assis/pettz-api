@@ -12,5 +12,5 @@ public record ImgUrlWithIdResponse(
     @Schema(description = "Image URL ID", example = "99ac1044-0c6e-4950-bfd4-76a2f3e074ae")
     UUID idImgUrl,
 
-    @Schema(description = "Image URL", example = "https://example.com/images/products/bluetooth-pro-headphones.jpg")
+    @Schema(description = "Image URL", example = "https://example.com/images/products/premium-dog-bed.jpg")
     String imgUrl) {}

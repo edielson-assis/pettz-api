@@ -9,7 +9,7 @@ import br.com.pettz.models.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
     
-    boolean existsByName(String name);
+    boolean existsByNameIgnoreCase(String name);
 
     boolean existsByNameAndIdCategoryNot(String name, UUID idCategory);
 
