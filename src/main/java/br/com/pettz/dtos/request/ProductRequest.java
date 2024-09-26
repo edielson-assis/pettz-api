@@ -17,14 +17,15 @@ public record ProductRequest(
     @NotBlank(message = "Code is required")
     String code,
 
-    @Schema(description = "Product name", example = "Bluetooth Pro Headphones")
+    @Schema(description = "Product name", example = "Premium Dog Bed")
     @NotBlank(message = "Name is required")
     String name,
 
-    @Schema(description = "Product description", example = "Wireless headphones with noise cancellation and 20h battery life.")
+    @Schema(description = "Product description", example = "Comfortable and durable dog bed with washable cover.")
     @NotBlank(message = "Description is required")
     String description,
 
+    @Schema(description = "Product price", example = "129.99")
     @Positive(message = "Value must be positive")
     @NotNull(message = "Price is required")
     BigDecimal price,

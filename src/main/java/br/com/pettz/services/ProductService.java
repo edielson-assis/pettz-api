@@ -1,13 +1,10 @@
 package br.com.pettz.services;
 
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import br.com.pettz.dtos.request.ColorRequest;
-import br.com.pettz.dtos.request.ImgUrlRequest;
 import br.com.pettz.dtos.request.ProductRequest;
 import br.com.pettz.dtos.request.ProductUpdateRequest;
 import br.com.pettz.dtos.response.ProductResponse;
@@ -25,7 +22,5 @@ public interface ProductService {
 
     ProductResponse updateProductById(UUID idProduct, ProductUpdateRequest productRequest);
 
-    void removeImgUrls(UUID productId, Set<ImgUrlRequest> imageUrls);
-
-    void removeColors(UUID productId, Set<ColorRequest> colorNames);
+    void deleteProduct(UUID idProduct);
 }

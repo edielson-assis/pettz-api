@@ -86,15 +86,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void removeImgUrls(UUID productId, Set<ImgUrlRequest> imageUrls) {
-        var imgs = imageUrls.stream().map(ImgUrlRequest::imgUrl).collect(Collectors.toSet());
-        removeImagesFromProduct(productId, imgs);
-    }
-
-    @Override
-    public void removeColors(UUID productId, Set<ColorRequest> colorNames) {
-        var colors = colorNames.stream().map(ColorRequest::name).collect(Collectors.toSet());
-        removeColorsFromProduct(productId, colors);
+    public void deleteProduct(UUID idProduct) {
+        Product product = findProductById(idProduct);
+        removeImages(product);
+        removeColors(product);
+        removeCategories(product);
+        repository.delete(product);
     }
 
     private synchronized void validateProductExists(Product product) {
@@ -114,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private synchronized void validateCodeExists(Product product) {
-        boolean exists = repository.existsByCode(product.getCode());
+        boolean exists = repository.existsByCode(product.getCode().toUpperCase());
         if (exists) {
             log.error("Code already exists: {}", product.getCode());
             throw new ValidationException("Code already exists: " + product.getCode());
@@ -144,26 +141,37 @@ public class ProductServiceImpl implements ProductService {
         return categoryService.findByCategories(categories, product);
     }
 
-    private void removeImagesFromProduct(UUID productId, Set<String> imageUrls) {
-        Product product = findProductById(productId);
-        Set<ImgUrl> imgUrlsToRemove = product.getImgUrls().stream().filter(imgUrl -> imageUrls.contains(imgUrl.getUrl())).collect(Collectors.toSet());
+    private void removeImages(Product product) {
+        var imageUrls = product.getImgUrls().stream().map(ImgUrl::getUrl).collect(Collectors.toSet());
+        var imgUrlsToRemove = product.getImgUrls().stream().filter(imgUrl -> imageUrls.contains(imgUrl.getUrl())).collect(Collectors.toSet());
 
         if (!imgUrlsToRemove.isEmpty()) {
             log.info("Removing {} images from product: {}", imgUrlsToRemove.size(), product.getName());
             product.getImgUrls().removeAll(imgUrlsToRemove);
             imgUrlService.deleteAllImages(imgUrlsToRemove);
-            repository.save(product);
         }
     }
 
-    private void removeColorsFromProduct(UUID productId, Set<String> colorNames) {
-        Product product = findProductById(productId);
-        Set<Color> colorsToRemove = product.getColors().stream().filter(color -> colorNames.contains(color.getColor())).collect(Collectors.toSet());
+    private void removeColors(Product product) {
+        var colors = product.getColors().stream().map(Color::getColor).collect(Collectors.toSet());
+        var colorsToRemove = product.getColors().stream().filter(color -> colors.contains(color.getColor())).collect(Collectors.toSet());
 
         if (!colorsToRemove.isEmpty()) {
-            log.info("Removing {} colors from product: {}", colorsToRemove.size(), product.getName());
+            log.info("Removing associations between product: {} and {} colors", product.getName(), colorsToRemove.size());
             product.getColors().removeAll(colorsToRemove);
-            repository.save(product);
+        }
+    }
+
+    private void removeCategories(Product product) {
+        var categories = product.getCategories();
+        
+        if (!categories.isEmpty()) {
+            log.info("Removing associations between product: {} and {} categories", product.getName(), categories.size());
+            for (Category category : categories) {
+                category.getProducts().remove(product); 
+            }
+            product.getCategories().clear(); 
+            //repository.save(product);
         }
     }
 }

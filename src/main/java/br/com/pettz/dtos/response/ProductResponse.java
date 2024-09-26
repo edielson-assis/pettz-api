@@ -19,11 +19,13 @@ public class ProductResponse extends RepresentationModel<ProductResponse> {
     @Schema(description = "Product code", example = "PRD001")
     private String code;
 
-    @Schema(description = "Product name", example = "Bluetooth Pro Headphones")
+    @Schema(description = "Product name", example = "Premium Dog Bed")
     private String name;
 
-    @Schema(description = "Product description", example = "Wireless headphones with noise cancellation and 20h battery life.")
+    @Schema(description = "Product description", example = "Comfortable and durable dog bed with washable cover.")
     private String description;
+
+    @Schema(description = "Product price", example = "129.99")
     private BigDecimal price;
 
     @Schema(description = "List of img Urls")

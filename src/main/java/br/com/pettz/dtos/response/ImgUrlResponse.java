@@ -7,5 +7,5 @@ import lombok.Builder;
 @Schema(name = "Get Image URL Response DTO", description = "DTO to get an existing image URL")
 public record ImgUrlResponse(
     
-    @Schema(description = "Image URL", example = "https://example.com/images/products/bluetooth-pro-headphones.jpg")
+    @Schema(description = "Image URL", example = "https://example.com/images/products/premium-dog-bed.jpg")
     String imgUrl) {}

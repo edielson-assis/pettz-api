@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 @Schema(name = "Register Category Request DTO", description = "DTO to register a new category")
 public record CategoryRequest(
 
-    @Schema(description = "Category name", example = "Electronics")
+    @Schema(description = "Category name", example = "Pet Accessories")
     @NotBlank(message = "Name is required") 
     @Pattern(regexp = "^[a-zA-ZÀ-ÿ\\s]+$", message = "Only letters must be typed")
     String name

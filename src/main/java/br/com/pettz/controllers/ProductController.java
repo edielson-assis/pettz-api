@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,7 +63,7 @@ public class ProductController implements ProductControllerSwagger {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admin")
+    @GetMapping(path = "/admin/getAll")
     @PreAuthorize("hasAuthority('Admin')")
     @Override
     public ResponseEntity<Page<ProductWithIdResponse>> findAllProductsWithId(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
@@ -78,5 +79,14 @@ public class ProductController implements ProductControllerSwagger {
     public ResponseEntity<ProductResponse> updateProductById(@PathVariable UUID productId, @Valid @RequestBody ProductUpdateRequest productRequest) {
         var product = service.updateProductById(productId, productRequest);
         return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @Transactional
+    @DeleteMapping(path = "/admin/delete/{productId}")
+    @PreAuthorize("hasAuthority('Admin')")
+    @Override
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
+        service.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
     }
 }

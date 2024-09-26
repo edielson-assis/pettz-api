@@ -63,7 +63,7 @@ public class CategoryController implements CategoryControllerSwagger {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admin")
+    @GetMapping(path = "/admin/getAll")
     @PreAuthorize("hasAuthority('Admin')")
     @Override
     public ResponseEntity<Page<CategoryWithIdResponse>> findAllCategoriesWithId(@PageableDefault(size = 10, sort = {"name"}, direction = Direction.DESC) Pageable pageable) {
