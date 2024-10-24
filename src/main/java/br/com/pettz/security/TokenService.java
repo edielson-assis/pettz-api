@@ -3,59 +3,166 @@ package br.com.pettz.security;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
-import br.com.pettz.security.exception.SecurityException;
-import br.com.pettz.models.User;
+import br.com.pettz.dtos.response.TokenAndRefreshTokenResponse;
+import br.com.pettz.dtos.response.TokenResponse;
+import br.com.pettz.services.AuthService;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 @Service
 public class TokenService {
 
-    private static final String ISSUER = "Pettz API";
-    
-    @Value("${api.security.token.secret}")
-    private String secret;
+    private static final String CLAIM_ROLES = "roles";
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final String ZONE_ID = "-03:00";
 
-    public String generateToken(User user) {
-        try {
-            var algorithm = Algorithm.HMAC256(secret);
-            log.info("Generating JWT token");
-            return JWT.create()
-                    .withIssuer(ISSUER)
-                    .withSubject(user.getUsername())
-                    .withExpiresAt(exprirationToken())
-                    .sign(algorithm);
-        } catch (JWTCreationException exception){
-            log.error("Error generating JWT token.", exception.getMessage());
-            throw new SecurityException("Error generating JWT token", exception);
+    @Value("${security.jwt.token.secret-key}")
+    private String secretKey;
+
+    @Value("${security.jwt.token.expiration-length}")
+    private int expirationToken;
+
+    @Value("${security.jwt.token.refresh-expiration-length}")
+    private int refreshExpirationToken;
+
+    private final AuthService userService;
+    private Algorithm algorithm;
+
+	public TokenService(AuthService userService) {
+        this.userService = userService;
+    }
+
+    @PostConstruct
+    protected void init() {
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        algorithm = Algorithm.HMAC256(secretKey.getBytes());
+    }
+
+    public TokenAndRefreshTokenResponse createAccessTokenRefreshToken(String username, List<String> roles) {
+		log.info("Generating access token for user: {}", username);
+        Instant now = Instant.now();
+        Instant expiration = calculateExpirationToken();
+
+        var accessToken = createToken(username, roles, now, expiration);
+        var refreshToken = createRefreshToken(username, roles, now);
+		log.debug("Access token and refresh token generated for user: {}", username);
+        return new TokenAndRefreshTokenResponse(accessToken, refreshToken);
+    }
+
+    public TokenResponse refreshToken(String refreshToken, String username) {
+        refreshToken = stripBearerPrefix(refreshToken);
+        DecodedJWT decodedJWT = verifyToken(refreshToken);
+        String user = decodedJWT.getSubject();
+		verifyUsername(username, decodedJWT);
+        List<String> roles = decodedJWT.getClaim(CLAIM_ROLES).asList(String.class);
+		log.debug("Token refreshed for user: {}", user);
+        return createAccessToken(user, roles);
+    }
+
+    public Authentication getAuthentication(String token) {
+		log.info("Getting authentication from token");
+        DecodedJWT decodedJWT = verifyToken(token);
+        UserDetails userDetails = userService.loadUserByUsername(decodedJWT.getSubject());
+        log.debug("User authenticated: {}", decodedJWT.getSubject());
+		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public String resolveToken(HttpServletRequest req) {
+        String bearerToken = req.getHeader("Authorization");
+		log.info("Resolving token from request header");
+        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(BEARER_PREFIX.length());
         }
+        return null;
     }
 
-    public String getSubject(String tokenJWT) {
-        try {
-            var algorithm = Algorithm.HMAC256(secret);
-            log.info("Verifying JWT token: {}", tokenJWT);
-            return JWT.require(algorithm)
-                    .withIssuer(ISSUER)
-                    .build()
-                    .verify(tokenJWT)
-                    .getSubject();
-        } catch (JWTVerificationException exception) {
-            log.error("Invalid or expired JWT token!", exception.getMessage());
-            throw new SecurityException("Invalid or expired JWT token!");
+    public boolean validateToken(String token) {
+		log.info("Validating token");
+        DecodedJWT decodedJWT = verifyToken(token);
+        return !decodedJWT.getExpiresAt().before(new Date());
+    }
+
+	private TokenResponse createAccessToken(String username, List<String> roles) {
+		log.info("Generating access token for user: {}", username);
+        Instant now = Instant.now();
+        Instant expiration = calculateExpirationToken();
+
+        var accessToken = createToken(username, roles, now, expiration);
+		log.debug("Access token and refresh token generated for user: {}", username);
+        return new TokenResponse(accessToken);
+    }
+
+    private String createToken(String username, List<String> roles, Instant now, Instant expiration) {
+        log.info("Creating access token for user: {}", username);
+		String issuerUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        return JWT.create()
+                .withClaim(CLAIM_ROLES, roles)
+                .withIssuedAt(now)
+                .withExpiresAt(expiration)
+                .withSubject(username)
+                .withIssuer(issuerUrl)
+                .sign(algorithm);
+    }
+
+    private String createRefreshToken(String username, List<String> roles, Instant now) {
+        log.info("Creating refresh token for user: {}", username);
+		Instant expiration = calculateExpirationRefreshToken();
+        return JWT.create()
+                .withClaim(CLAIM_ROLES, roles)
+                .withIssuedAt(now)
+                .withExpiresAt(expiration)
+                .withSubject(username)
+                .sign(algorithm);
+    }
+
+    private Instant calculateExpirationToken() {
+		log.info("Calculating expiration time for access token");
+        return LocalDateTime.now().plusHours(expirationToken).toInstant(ZoneOffset.of(ZONE_ID));
+    }
+
+    private Instant calculateExpirationRefreshToken() {
+		log.info("Calculating expiration time for refresh token");
+        return LocalDateTime.now().plusDays(refreshExpirationToken).toInstant(ZoneOffset.of(ZONE_ID));
+    }
+
+    private DecodedJWT verifyToken(String token) {
+		log.info("Decoding token");
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        return verifier.verify(token);
+    }
+
+    private String stripBearerPrefix(String token) {
+        if (token.startsWith(BEARER_PREFIX)) {
+            return token.substring(BEARER_PREFIX.length());
         }
+        return token;
     }
 
-    private Instant exprirationToken() {
-        return LocalDateTime.now().plusHours(12).toInstant(ZoneOffset.of("-03:00"));
-    }
+	private void verifyUsername(String username, DecodedJWT decodedJWT) {
+		String tokenUsername = decodedJWT.getSubject();
+		if (!username.equals(tokenUsername)) {
+			log.error("Error during refresh token generation for user: " + username);
+			throw new BadCredentialsException("Failed to refresh the token for user: " + username);
+		}
+	}
 }

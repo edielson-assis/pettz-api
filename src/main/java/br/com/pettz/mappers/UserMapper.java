@@ -1,32 +1,28 @@
 package br.com.pettz.mappers;
 
-import br.com.pettz.dtos.request.UserRequest;
+import br.com.pettz.dtos.request.UserSignupRequest;
 import br.com.pettz.dtos.response.UserResponse;
 import br.com.pettz.models.User;
 import br.com.pettz.models.enums.Role;
 
 public class UserMapper {
 
-    private static final boolean IS_ACCOUNT_NON_EXPIRED = true;
-    private static final boolean IS_ACCOUNT_NON_LOCKED = true;
-    private static final boolean IS_CREDENTIALS_NON_EXPIRED = true;
-    private static final boolean IS_ENABLED = true;
-
     private UserMapper() {}
     
-    public static User toEntity(UserRequest userRequest) {
-        return User.builder()
-                .email(userRequest.email())
-                .password(userRequest.password())
-                .role(Role.USER)
-                .isAccountNonExpired(IS_ACCOUNT_NON_EXPIRED)
-                .isAccountNonLocked(IS_ACCOUNT_NON_LOCKED)
-                .isCredentialsNonExpired(IS_CREDENTIALS_NON_EXPIRED)
-                .isEnabled(IS_ENABLED).build();
+    public static User toEntity(UserSignupRequest userRequest) {
+        User user = new User();
+        user.setFullName(userRequest.fullName());
+        user.setEmail(userRequest.email());
+        user.setPassword(userRequest.password());
+        user.setRole(Role.USER);
+        //user.getRoles().add(user.getRole().getName());
+        return user;
     }
 
     public static UserResponse toDto(User user) {
         return UserResponse.builder()
+                .userId(user.getIdUser())
+                .fullName(user.getFullName())
                 .email(user.getEmail()).build();
     }
 }

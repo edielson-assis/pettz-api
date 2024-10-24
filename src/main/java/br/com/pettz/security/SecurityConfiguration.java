@@ -14,19 +14,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import br.com.pettz.config.CorsConfig;
 import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableMethodSecurity(securedEnabled = true)
-public class SecurityConfiguration implements WebMvcConfigurer {
+public class SecurityConfiguration {
 
-    private final SecurityFilter securityFilter;
-    private final CorsConfig corsConfig;
+    private final TokenService tokenService;
 
     private static final String AUTHORITY_NAME = "Admin";
     private static final String PUBLIC_POST_METHODS = "/api/v1/auth/**";
@@ -36,19 +33,20 @@ public class SecurityConfiguration implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        SecurityFilter securityFilte = new SecurityFilter(tokenService);
+
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
+                .addFilterBefore(securityFilte, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.POST, PUBLIC_POST_METHODS).permitAll()
                     .requestMatchers(HttpMethod.GET, PUBLIC_GET_METHODS).permitAll()
                     .requestMatchers(SWAGGER).permitAll()
                     .requestMatchers(ADMIN_METHODS).hasAuthority(AUTHORITY_NAME)
                     .requestMatchers("/admin/**").hasAuthority(AUTHORITY_NAME);
+                    //.requestMatchers("/users").denyAll();
                     req.anyRequest().authenticated();
-                })
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                }).build();
     }
 
     @Bean

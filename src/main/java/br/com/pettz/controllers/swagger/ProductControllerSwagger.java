@@ -45,7 +45,7 @@ public interface ProductControllerSwagger {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful get product", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))}),
-        @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Not found - Product not found", content = @Content)
     })
     ResponseEntity<ProductResponse> findProductByName(String name);
 
@@ -84,8 +84,8 @@ public interface ProductControllerSwagger {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))}),
         @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content),
-        @ApiResponse(responseCode = "404", description = "Not found - Category not found", content = @Content),
-        @ApiResponse(responseCode = "409", description = "Conflict - Category's name already exists", content = @Content)
+        @ApiResponse(responseCode = "404", description = "Not found - Product not found", content = @Content),
+        @ApiResponse(responseCode = "409", description = "Conflict - Product's name already exists", content = @Content)
     })
     ResponseEntity<ProductResponse> updateProductById(UUID productId, ProductUpdateRequest productRequest);
 
