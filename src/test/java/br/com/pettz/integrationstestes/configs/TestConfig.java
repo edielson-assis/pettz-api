@@ -4,6 +4,8 @@ public class TestConfig {
     
     public static final int SERVER_PORT = 8888;
 
+    public static final String APPLICATION_JSON = "application/json";
+
     public static final String HEADER_PARAM_AUTHORIZATION = "Authorization";
 	public static final String HEADER_PARAM_ORIGIN = "Origin";
 
