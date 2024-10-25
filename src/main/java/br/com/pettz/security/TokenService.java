@@ -6,6 +6,7 @@ import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -58,7 +59,7 @@ public class TokenService {
         algorithm = Algorithm.HMAC256(secretKey.getBytes());
     }
 
-    public TokenAndRefreshTokenResponse createAccessTokenRefreshToken(String username, List<String> roles) {
+    public TokenAndRefreshTokenResponse createAccessTokenRefreshToken(UUID idUser, String fullName, String username, List<String> roles) {
 		log.info("Generating access token for user: {}", username);
         Instant now = Instant.now();
         Instant expiration = calculateExpirationToken();
@@ -66,7 +67,7 @@ public class TokenService {
         var accessToken = createToken(username, roles, now, expiration);
         var refreshToken = createRefreshToken(username, roles, now);
 		log.debug("Access token and refresh token generated for user: {}", username);
-        return new TokenAndRefreshTokenResponse(accessToken, refreshToken);
+        return new TokenAndRefreshTokenResponse(idUser, fullName, accessToken, refreshToken);
     }
 
     public TokenResponse refreshToken(String refreshToken, String username) {

@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 			log.debug("Authentication successful for user: {}", username);
 			var user = findUserByEmail(username);
 			log.info("Generating access and refresh token for user: {}", username);
-			return tokenService.createAccessTokenRefreshToken(user.getUsername(), user.getRoles());
+			return tokenService.createAccessTokenRefreshToken(user.getIdUser(), user.getFullName(), user.getUsername(), user.getRoles());
 		} catch (Exception e) {
 			log.error("Invalid username or password for user: {}", username);
 			throw new BadCredentialsException("Invalid username or password");

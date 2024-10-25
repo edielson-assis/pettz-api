@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.AllArgsConstructor;
 
@@ -21,9 +23,9 @@ import lombok.AllArgsConstructor;
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableMethodSecurity(securedEnabled = true)
-public class SecurityConfiguration {
+public class SecurityConfiguration implements WebMvcConfigurer {
 
-    private final TokenService tokenService;
+    private final TokenService tokenService; 
 
     private static final String AUTHORITY_NAME = "Admin";
     private static final String PUBLIC_POST_METHODS = "/api/v1/auth/**";
@@ -43,10 +45,10 @@ public class SecurityConfiguration {
                     .requestMatchers(HttpMethod.GET, PUBLIC_GET_METHODS).permitAll()
                     .requestMatchers(SWAGGER).permitAll()
                     .requestMatchers(ADMIN_METHODS).hasAuthority(AUTHORITY_NAME)
-                    .requestMatchers("/admin/**").hasAuthority(AUTHORITY_NAME);
-                    //.requestMatchers("/users").denyAll();
+                    .requestMatchers("/admin/**").hasAuthority(AUTHORITY_NAME)
+                    .requestMatchers("/users").denyAll();
                     req.anyRequest().authenticated();
-                }).build();
+                }).cors(Customizer.withDefaults()).build();
     }
 
     @Bean
