@@ -30,7 +30,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     private static final String AUTHORITY_NAME = "Admin";
     private static final String PUBLIC_POST_METHODS = "/api/v1/auth/**";
     private static final String[] SWAGGER = {"/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"};
-    private static final String[] PUBLIC_GET_METHODS = {"/api/v1/categories/**", "/api/v1/products/**"};
+    private static final String[] PUBLIC_GET_METHODS = {"/api/v1/categories/**", "/api/v1/products/**", "/api/v1/auth/refresh/**"};
     private static final String[] ADMIN_METHODS = {"/api/v1/categories/admin/**", "/api/v1/products/admin/**"};
 
     @Bean

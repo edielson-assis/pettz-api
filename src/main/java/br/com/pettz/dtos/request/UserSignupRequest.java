@@ -5,7 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
+@Builder
 @Schema(description = "Represents the User's Signup")
 public record UserSignupRequest(
 

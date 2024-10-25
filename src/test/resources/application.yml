@@ -1,0 +1,26 @@
+server:
+  port: 8888
+cors:
+  allowedMappings: ${ALLOWED_MAPPINGS}
+  allowedOrigins: ${ALLOWED_ORIGINS}
+  allowedMethods: ${ALLOWED_METHODS}
+  allowedHeaders: ${ALLOWED_HEADERS}
+  maxAge: ${MAX_AGE}
+security:
+  jwt:
+    token:
+      secret-key: ${SECRET_KEY}
+      expiration-length: ${EXPIRATION_TOKEN}
+      refresh-expiration-length: ${EXPIRATION_REFRESH_TOKEN}
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+springdoc:
+  pathsToMatch: /api/v1/**
+  swagger-ui:
+    use-root-path: true
