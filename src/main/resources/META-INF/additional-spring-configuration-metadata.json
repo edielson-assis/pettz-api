@@ -1,5 +1,42 @@
-{"properties": [{
-  "name": "api.security.token.secret",
-  "type": "java.lang.String",
-  "description": "A description for 'api.security.token.secret'"
-}]}
+{"properties": [
+  {
+    "name": "cors.allowedMappings",
+    "type": "java.lang.String",
+    "description": "A description for 'cors.allowedMappings'"
+  },
+  {
+    "name": "cors.allowedOrigins",
+    "type": "java.lang.String",
+    "description": "A description for 'cors.allowedOrigins'"
+  },
+  {
+    "name": "cors.allowedMethods",
+    "type": "java.lang.String",
+    "description": "A description for 'cors.allowedMethods'"
+  },
+  {
+    "name": "cors.allowedHeaders",
+    "type": "java.lang.String",
+    "description": "A description for 'cors.allowedHeaders'"
+  },
+  {
+    "name": "cors.maxAge",
+    "type": "java.lang.String",
+    "description": "A description for 'cors.maxAge'"
+  },
+  {
+    "name": "security.jwt.token.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.token.secret-key'"
+  },
+  {
+    "name": "security.jwt.token.expiration-length",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.token.expiration-length'"
+  },
+  {
+    "name": "security.jwt.token.refresh-expiration-length",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.token.refresh-expiration-length'"
+  }
+]}

@@ -17,16 +17,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @EqualsAndHashCode(of = "idUser")
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Setter
 @Getter
 @Entity
 @Table(name = "users")
@@ -36,6 +32,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_user", columnDefinition = "UUID")
     private UUID idUser;
+
+    @Column(nullable = false, name = "full_name", length = 150)
+    private String fullName;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -48,16 +47,20 @@ public class User implements UserDetails {
     private Role role;
 
     @Column(nullable = false, name = "is_account_non_expired")
-    private boolean isAccountNonExpired;
+    private boolean accountNonExpired = true;
 
     @Column(nullable = false, name = "is_account_non_locked")
-    private boolean isAccountNonLocked;
+    private boolean accountNonLocked = true;
 
     @Column(nullable = false, name = "is_credentials_non_expired")
-    private boolean isCredentialsNonExpired;
+    private boolean credentialsNonExpired = true;
 
     @Column(nullable = false, name = "is_enabled")
-    private boolean isEnabled;
+    private boolean enabled = true;
+
+    public List<String> getRoles() {
+		return List.of(new SimpleGrantedAuthority(role.getName()).toString());
+	}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -76,26 +79,26 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.isAccountNonExpired;
+        return this.accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.isAccountNonLocked;
+        return this.accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.isCredentialsNonExpired;
+        return this.credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.isEnabled;
+        return this.enabled;
     }
 
     public void isNonDisabled() {
-        this.isEnabled = false;
+        this.enabled = false;
     }
 
     public void setPassword(String password) {
