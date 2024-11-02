@@ -4,13 +4,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.pettz.dtos.request.CategoryRequest;
-import br.com.pettz.dtos.request.ColorRequest;
-import br.com.pettz.dtos.request.ImgUrlRequest;
 import br.com.pettz.dtos.request.ProductRequest;
 import br.com.pettz.dtos.request.ProductUpdateRequest;
 import br.com.pettz.dtos.response.ProductResponse;
@@ -77,6 +75,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Resource getImages(String filename) {
+        return imgUrlService.loadFileAsResource(filename);
+    }
+
+    @Override
     public ProductResponse updateProductById(UUID idProduct, ProductUpdateRequest productRequest) {
         Product product = findProductById(idProduct);
         ProductMapper.toUpdateEntity(product, productRequest);
@@ -91,6 +94,7 @@ public class ProductServiceImpl implements ProductService {
         removeImages(product);
         removeColors(product);
         removeCategories(product);
+        log.info("Deleting product with name: {}", product.getName());
         repository.delete(product);
     }
 
@@ -127,17 +131,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private Set<ImgUrl> imgUrls(ProductRequest productRequest, Product product) {
-        var imgUrls = productRequest.imgUrls().stream().map(ImgUrlRequest::imgUrl).collect(Collectors.toSet());
-        return imgUrlService.findByImgUrls(imgUrls, product);
+        return productRequest.imgUrls().stream().map(imgFile -> imgUrlService.saveImages(imgFile, product)).collect(Collectors.toSet());
     }
 
     private Set<Color> colors(ProductRequest productRequest, Product product) {
-        var colors = productRequest.colors().stream().map(ColorRequest::name).collect(Collectors.toSet());
+        var colors = productRequest.colors();
         return colorService.findByColors(colors, product);
     }
 
     private Set<Category> categories(ProductRequest productRequest, Product product) {
-        var categories = productRequest.categories().stream().map(CategoryRequest::name).collect(Collectors.toSet());
+        var categories = productRequest.categories();
         return categoryService.findByCategories(categories, product);
     }
 
@@ -171,7 +174,6 @@ public class ProductServiceImpl implements ProductService {
                 category.getProducts().remove(product); 
             }
             product.getCategories().clear(); 
-            //repository.save(product);
         }
     }
 }

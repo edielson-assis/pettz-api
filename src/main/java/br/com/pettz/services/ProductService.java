@@ -2,6 +2,7 @@ package br.com.pettz.services;
 
 import java.util.UUID;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,6 +20,8 @@ public interface ProductService {
     Page<ProductResponse> findAllProducts(Pageable pageable);
 
     Page<ProductWithIdResponse> findAllProductsWithId(Pageable pageable);
+
+    Resource getImages(String filename);
 
     ProductResponse updateProductById(UUID idProduct, ProductUpdateRequest productRequest);
 

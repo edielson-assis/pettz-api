@@ -3,8 +3,9 @@ package br.com.pettz.dtos.request;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -30,15 +31,15 @@ public record ProductRequest(
     @NotNull(message = "Price is required")
     BigDecimal price,
 
-    @Schema(description = "List of categories")
+    @Schema(description = "Category names", example = "[\"Pet Accessories\"]")
     @NotEmpty(message = "A list of categories cannot be empty")
-    Set<@Valid CategoryRequest> categories,
+    Set<String> categories,
 
-    @Schema(description = "List of img Urls")
-    @NotEmpty(message = "A list of imgUrls cannot be empty")
-    Set<@Valid ImgUrlRequest> imgUrls,
-
-    @Schema(description = "List of colors")
+    @Schema(description = "Color names", example = "[\"Light blue\"]")
     @NotEmpty(message = "A list of colors cannot be empty")
-    Set<@Valid ColorRequest> colors
+    Set<String> colors,
+
+    @Schema(description = "Image files")
+    @NotEmpty(message = "A list of imgUrls cannot be empty")
+    Set<MultipartFile> imgUrls
 ) {}

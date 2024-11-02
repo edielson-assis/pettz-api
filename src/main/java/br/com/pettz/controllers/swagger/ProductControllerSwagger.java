@@ -2,6 +2,7 @@ package br.com.pettz.controllers.swagger;
 
 import java.util.UUID;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public interface ProductControllerSwagger {
         @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content)
     })
-    ResponseEntity<ProductResponse> registerNewProduct(ProductRequest productRequest);
+    ResponseEntity<ProductResponse> registerNewProduct(ProductRequest productRequests);
     
     @Operation(
       summary = "Find product by name",
@@ -72,6 +73,17 @@ public interface ProductControllerSwagger {
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content)
     })
     ResponseEntity<Page<ProductWithIdResponse>> findAllProductsWithId(Pageable pageable);
+
+    @Operation(
+      summary = "Find image by name",
+      description = "Find image by name. The response, if successful, is a file with image.",
+      tags = {"Products"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful get image", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Not found - Product not found", content = @Content)
+    })
+    ResponseEntity<Resource> getImages(String filename);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)}, 
