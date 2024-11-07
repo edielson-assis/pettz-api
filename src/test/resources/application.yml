@@ -1,0 +1,48 @@
+# Server settings
+server:
+  port: 8888
+
+# CORS settings
+cors:
+  allowedMappings: ${ALLOWED_MAPPINGS}
+  allowedOrigins: ${ALLOWED_ORIGINS}
+  allowedMethods: ${ALLOWED_METHODS}
+  allowedHeaders: ${ALLOWED_HEADERS}
+  maxAge: ${MAX_AGE}
+
+# Security JWT settings
+security:
+  jwt:
+    token:
+      secret-key: ${SECRET_KEY}
+      expiration-length: ${EXPIRATION_TOKEN}
+      refresh-expiration-length: ${EXPIRATION_REFRESH_TOKEN}
+
+# Spring datasource settings
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+# Spring JPA settings 
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+
+# File settings
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 4MB
+      max-request-size: 12MB
+
+file:
+  upload-dir: /home/runner/work/pettz/image
+
+# SpringDoc settings 
+springdoc:
+  pathsToMatch: /api/v1/**
+  swagger-ui:
+    use-root-path: true

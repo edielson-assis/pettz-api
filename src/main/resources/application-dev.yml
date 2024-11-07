@@ -1,0 +1,53 @@
+# Server settings
+server:
+  port: 80
+  error:
+    include-stacktrace: never
+
+# CORS settings
+cors:
+  allowedMappings: ${ALLOWED_MAPPINGS}
+  allowedOrigins: ${ALLOWED_ORIGINS}
+  allowedMethods: ${ALLOWED_METHODS}
+  allowedHeaders: ${ALLOWED_HEADERS}
+  maxAge: ${MAX_AGE}
+
+# Security JWT settings
+security:
+  jwt:
+    token:
+      secret-key: ${SECRET_KEY}
+      expiration-length: ${EXPIRATION_TOKEN}
+      refresh-expiration-length: ${EXPIRATION_REFRESH_TOKEN}
+
+# Spring datasource settings
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/${DATABASE_NAME}?useTimezone=true&serverTimezone=UTC
+    username: postgres
+    password: 1234567
+
+# Spring JPA settings
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+# File settings
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 2MB
+      max-request-size: 10MB
+
+file:
+  upload-dir: /pettz/products/images
+
+# SpringDoc settings
+springdoc:
+  pathsToMatch: /api/v1/**
+  swagger-ui:
+    use-root-path: true

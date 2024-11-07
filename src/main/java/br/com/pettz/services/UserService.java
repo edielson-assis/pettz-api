@@ -1,13 +1,18 @@
 package br.com.pettz.services;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
-import br.com.pettz.dtos.request.UserRequest;
+import br.com.pettz.dtos.request.UserSigninRequest;
+import br.com.pettz.dtos.request.UserSignupRequest;
+import br.com.pettz.dtos.response.TokenAndRefreshTokenResponse;
+import br.com.pettz.dtos.response.TokenResponse;
 import br.com.pettz.dtos.response.UserResponse;
 
 public interface UserService {
     
-    UserResponse register(UserRequest userRequest);
+    UserResponse signup(UserSignupRequest userRequest);
 
-    UserDetails loadUserByUsername(String email);
+    TokenAndRefreshTokenResponse signin(UserSigninRequest user);
+
+    TokenResponse refreshToken(String username, String refreshToken);
+
+    void disableUser(String email);
 }

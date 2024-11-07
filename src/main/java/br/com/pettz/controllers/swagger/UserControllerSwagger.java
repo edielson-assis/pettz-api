@@ -2,41 +2,76 @@ package br.com.pettz.controllers.swagger;
 
 import org.springframework.http.ResponseEntity;
 
-import br.com.pettz.dtos.request.UserRequest;
+import br.com.pettz.dtos.request.UserSigninRequest;
+import br.com.pettz.dtos.request.UserSignupRequest;
+import br.com.pettz.dtos.response.TokenAndRefreshTokenResponse;
+import br.com.pettz.dtos.response.TokenResponse;
 import br.com.pettz.dtos.response.UserResponse;
-import br.com.pettz.security.TokenJWT;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Authentication", description = "Authentication management APIs")
+@Tag(name = "Authentication", description = "Endpoints for Managing User")
 public interface UserControllerSwagger {
     
+    static final String SECURITY_SCHEME_KEY = "bearer-key";
+    
     @Operation(
-      summary = "Create a user",
-      description = "Create a user. The response, if successful, is a JSON with information about created user.",
-      tags = {"Authentication"}
-  )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Successful create user", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)) }),
-            @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request.", content = @Content)
-    })
-    ResponseEntity<UserResponse> register(UserRequest userRequest);
+        summary = "Adds a new User",
+		description = "Adds a new User by passing in a JSON, XML or YML representation of the user!",
+		tags = {"Authentication"},
+		responses = {
+			@ApiResponse(responseCode = "201", description = "Created user",
+				content = @Content(schema = @Schema(implementation = UserResponse.class))),
+			@ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error - Server error", content = @Content)
+		}
+	)
+    ResponseEntity<UserResponse> signup(UserSignupRequest userRequest);
 
     @Operation(
-      summary = "Perform authentication",
-      description = "Endpoint to user perform authentication. The response, if successful, is a JSON with JWT.",
-      tags = {"Authentication"}
-  )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful user authenticatio.", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = TokenJWT.class)) }),
-            @ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid email or password", content = @Content)
-    })
-    ResponseEntity<TokenJWT> login(UserRequest user);
+        summary = "Authenticates a user",
+		description = "Authenticates a user and returns a token",
+		tags = {"Authentication"},
+		responses = {
+			@ApiResponse(responseCode = "201", description = "Authenticated user",
+				content = @Content(schema = @Schema(implementation = TokenAndRefreshTokenResponse.class))),
+			@ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid email or password", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error - Server error", content = @Content)
+		}
+	)
+    ResponseEntity<TokenAndRefreshTokenResponse> signin(UserSigninRequest userRequest);
+
+    @Operation(
+        summary = "Updates a Token",
+		description = "Refresh token for authenticated user and returns a token",
+		tags = {"Authentication"},
+		responses = {
+			@ApiResponse(responseCode = "200", description = "Updated token", 
+				content = @Content(schema = @Schema(implementation = TokenResponse.class))),
+			@ApiResponse(responseCode = "400", description = "Bad request - Something is wrong with the request", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem",  content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found - User not found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error - Server error", content = @Content)
+		}
+	)
+    ResponseEntity<TokenResponse> refreshToken(String username, String refreshToken);
+
+	@Operation(
+		security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)},
+        summary = "Deletes a User",
+		description = "Deletes a User by their Email",
+		tags = {"Authentication"},
+		responses = {
+			@ApiResponse(responseCode = "204", description = "Deleted user", content = @Content),
+			@ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem",  content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found - User not found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error - Server error", content = @Content)
+		}
+	)
+	ResponseEntity<Void> deleteUser(String email);
 }
