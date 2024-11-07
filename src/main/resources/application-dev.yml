@@ -1,3 +1,9 @@
+# Server settings
+server:
+  port: 80
+  error:
+    include-stacktrace: never
+
 # CORS settings
 cors:
   allowedMappings: ${ALLOWED_MAPPINGS}
@@ -18,15 +24,15 @@ security:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/${DATABASE_NAME}?useTimezone=true&serverTimezone=UTC
+    username: postgres
+    password: 1234567
 
 # Spring JPA settings
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: false
+      ddl-auto: update
+    show-sql: true
     open-in-view: false
 
 # File settings
@@ -39,11 +45,6 @@ spring:
 
 file:
   upload-dir: /pettz/products/images
-
-# Server settings
-server:
-  error:
-    include-stacktrace: never
 
 # SpringDoc settings
 springdoc:
