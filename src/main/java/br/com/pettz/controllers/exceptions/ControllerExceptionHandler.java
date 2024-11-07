@@ -19,9 +19,11 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 
 import br.com.pettz.services.exceptions.DataBaseException;
+import br.com.pettz.services.exceptions.FileStorageException;
 import br.com.pettz.services.exceptions.ObjectNotFoundException;
 import br.com.pettz.services.exceptions.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -49,6 +51,20 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<StandardError> badRequest(HttpMessageNotReadableException exception, HttpServletRequest request) {
+        String error = "Invalid request";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(status).body(errors(status, error, exception, request));
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<StandardError> badRequest(FileStorageException exception, HttpServletRequest request) {
+        String error = "Invalid request";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(status).body(errors(status, error, exception, request));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<StandardError> badRequest(ConstraintViolationException exception, HttpServletRequest request) {
         String error = "Invalid request";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(errors(status, error, exception, request));
@@ -110,12 +126,12 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(status).body(errors(status, error, exception, request));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardError> databaseError(Exception exception, HttpServletRequest request) {
-        String error = "Internal server error";
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return ResponseEntity.status(status).body(errors(status, error, exception, request));
-    }
+    // @ExceptionHandler(Exception.class)
+    // public ResponseEntity<StandardError> databaseError(Exception exception, HttpServletRequest request) {
+    //     String error = "Internal server error";
+    //     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+    //     return ResponseEntity.status(status).body(errors(status, error, exception, request));
+    // }
 
     private StandardError errors(HttpStatus status, String error, Exception message, HttpServletRequest request) {
         return new StandardError(Instant.now(), status.value(), error, message.getMessage(), request.getRequestURI());

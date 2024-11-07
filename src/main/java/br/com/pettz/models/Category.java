@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import br.com.pettz.utils.validation.CategoryValidator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,6 +39,7 @@ public class Category implements Serializable {
     @Column(name = "id_category", columnDefinition = "UUID")
     private UUID idCategory;
 
+    @CategoryValidator
     @Column(nullable = false)
     private String name;
 
