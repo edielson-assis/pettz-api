@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import br.com.pettz.dtos.request.CategoryRequest;
 import br.com.pettz.dtos.response.CategoryProductResponse;
@@ -19,9 +18,9 @@ public interface CategoryService {
 
     CategoryProductResponse findCategoryByNameWithProducts(String name);
 
-    Page<CategoryResponse> findAllCategories(Pageable pageable);
+    Page<CategoryResponse> findAllCategories(Integer page, Integer size, String direction);
 
-    Page<CategoryWithIdResponse> findAllCategoriesWithId(Pageable pageable);
+    Page<CategoryWithIdResponse> findAllCategoriesWithId(Integer page, Integer size, String direction);
 
     Set<Category> findByCategories(Set<String> categories, Product product);
 

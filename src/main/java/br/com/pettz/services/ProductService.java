@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import br.com.pettz.dtos.request.ProductRequest;
 import br.com.pettz.dtos.request.ProductUpdateRequest;
@@ -15,11 +14,11 @@ public interface ProductService {
     
     ProductResponse registerNewProduct(ProductRequest productRequest);
 
-    ProductResponse findProductByName(String name);
+    Page<ProductResponse> findProductByName(String name, Integer page, Integer size, String direction);
 
-    Page<ProductResponse> findAllProducts(Pageable pageable);
+    Page<ProductResponse> findAllProducts(Integer page, Integer size, String direction);
 
-    Page<ProductWithIdResponse> findAllProductsWithId(Pageable pageable);
+    Page<ProductWithIdResponse> findAllProductsWithId(Integer page, Integer size, String direction);
 
     Resource getImages(String filename);
 

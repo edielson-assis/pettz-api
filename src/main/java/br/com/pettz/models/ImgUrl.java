@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(of = "idImgUrl")
+@EqualsAndHashCode(of = "imgUrlId")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -28,8 +28,8 @@ public class ImgUrl implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_img_url", columnDefinition = "UUID")
-    private UUID idImgUrl;
+    @Column(name = "img_url_id", columnDefinition = "UUID")
+    private UUID imgUrlId;
 
     @Column(nullable = false)
     private String url;

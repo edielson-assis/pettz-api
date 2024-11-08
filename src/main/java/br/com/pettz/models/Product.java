@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@EqualsAndHashCode(of = "idProduct")
+@EqualsAndHashCode(of = "productId")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -39,8 +39,8 @@ public class Product implements Serializable {
     @Id
     @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_product", columnDefinition = "UUID")
-    private UUID idProduct;
+    @Column(name = "product_id", columnDefinition = "UUID")
+    private UUID productId;
 
     @Setter(AccessLevel.NONE)
     @Column(nullable = false, unique = true)
@@ -62,6 +62,6 @@ public class Product implements Serializable {
     private final Set<ImgUrl> imgUrls = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_color", joinColumns = @JoinColumn(name = "id_product"), inverseJoinColumns = @JoinColumn(name = "id_color"))
+    @JoinTable(name = "product_color", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "color_id"))
     private final Set<Color> colors = new HashSet<>();
 }

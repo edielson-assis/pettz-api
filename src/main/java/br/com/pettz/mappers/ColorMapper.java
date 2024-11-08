@@ -14,7 +14,7 @@ public class ColorMapper {
 
     public static ColorWithIdResponse toColorWithIdDto(Color color) {
         return ColorWithIdResponse.builder()
-                .idColor(color.getIdColor())
+                .idColor(color.getColorId())
                 .color(color.getColor()).build();
     }
 }

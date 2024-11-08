@@ -23,7 +23,7 @@ public class ImgUrlMapper {
 
     public static ImgUrlWithIdResponse toImgUrlWithIdDto(ImgUrl url) {
         return ImgUrlWithIdResponse.builder()
-                .idImgUrl(url.getIdImgUrl())
+                .idImgUrl(url.getImgUrlId())
                 .imgUrl(IMAGE_URL.concat(url.getUrl())).build();
     }
 }

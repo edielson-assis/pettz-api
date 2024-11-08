@@ -3,8 +3,8 @@ package br.com.pettz.controllers.swagger;
 import java.util.UUID;
 
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 import br.com.pettz.dtos.request.ProductRequest;
@@ -48,7 +48,7 @@ public interface ProductControllerSwagger {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))}),
         @ApiResponse(responseCode = "404", description = "Not found - Product not found", content = @Content)
     })
-    ResponseEntity<ProductResponse> findProductByName(String name);
+    ResponseEntity<PagedModel<EntityModel<ProductResponse>>> findProductByName(String name, Integer page, Integer size, String direction);
 
     @Operation(
       summary = "Find all products",
@@ -59,7 +59,7 @@ public interface ProductControllerSwagger {
         @ApiResponse(responseCode = "200", description = "Successful get all products", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))})
     })
-    ResponseEntity<Page<ProductResponse>> findAllProducts(Pageable pageable);
+    ResponseEntity<PagedModel<EntityModel<ProductResponse>>> findAllProducts(Integer page, Integer size, String direction);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)},
@@ -72,7 +72,7 @@ public interface ProductControllerSwagger {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))}),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content)
     })
-    ResponseEntity<Page<ProductWithIdResponse>> findAllProductsWithId(Pageable pageable);
+    ResponseEntity<PagedModel<EntityModel<ProductWithIdResponse>>> findAllProductsWithId(Integer page, Integer size, String direction);
 
     @Operation(
       summary = "Find image by name",

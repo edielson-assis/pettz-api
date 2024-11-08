@@ -123,7 +123,7 @@ public class UserServiceTest {
     void testShouldPerformLoginAndReturnAJwtTokenAndARefreshToken() {
         TokenAndRefreshTokenResponse tAndRefreshTokenResponse = new TokenAndRefreshTokenResponse(USER_ID, FULL_NAME, ACCESS_TOKEN, REFRESH_TOKEN);
         when(repository.findByEmail(anyString())).thenReturn(Optional.of(user));
-        when(tokenService.createAccessTokenRefreshToken(user.getIdUser(), user.getFullName(), user.getUsername(), user.getRoles())).thenReturn(tAndRefreshTokenResponse);
+        when(tokenService.createAccessTokenRefreshToken(user.getUserId(), user.getFullName(), user.getUsername(), user.getRoles())).thenReturn(tAndRefreshTokenResponse);
 
         var response = service.signin(userSigninRequest);
 

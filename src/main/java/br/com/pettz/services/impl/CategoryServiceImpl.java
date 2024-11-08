@@ -6,7 +6,9 @@ import java.util.UUID;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import br.com.pettz.dtos.request.CategoryRequest;
@@ -51,13 +53,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<CategoryResponse> findAllCategories(Pageable pageable) {
+    public Page<CategoryResponse> findAllCategories(Integer page, Integer size, String direction) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
         log.info("Searching all Categories");
         return repository.findAll(pageable).map(CategoryMapper::toDto);
     }
 
     @Override
-    public Page<CategoryWithIdResponse> findAllCategoriesWithId(Pageable pageable) {
+    public Page<CategoryWithIdResponse> findAllCategoriesWithId(Integer page, Integer size, String direction) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
         log.info("Searching all Categories");
         return repository.findAll(pageable).map(CategoryMapper::toCategoryWithIdDto);
     }
@@ -112,7 +118,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private synchronized void validateCategoryNotExists(Category category) {
-        boolean exists = repository.existsByNameAndIdCategoryNot(category.getName(), category.getIdCategory());
+        boolean exists = repository.existsByNameAndCategoryIdNot(category.getName(), category.getCategoryId());
         if (exists) {
             log.error(CATEGORY_ALREADY_EXISTS.concat(": {}"), category.getName());
             throw new ValidationException(CATEGORY_ALREADY_EXISTS);

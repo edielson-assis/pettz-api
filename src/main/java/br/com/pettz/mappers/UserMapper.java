@@ -20,7 +20,7 @@ public class UserMapper {
 
     public static UserResponse toDto(User user) {
         return UserResponse.builder()
-                .userId(user.getIdUser())
+                .userId(user.getUserId())
                 .fullName(user.getFullName())
                 .email(user.getEmail()).build();
     }

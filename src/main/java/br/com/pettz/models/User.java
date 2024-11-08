@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-@EqualsAndHashCode(of = "idUser")
+@EqualsAndHashCode(of = "userId")
 @Setter
 @Getter
 @Entity
@@ -30,8 +30,8 @@ public class User implements UserDetails {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_user", columnDefinition = "UUID")
-    private UUID idUser;
+    @Column(name = "user_id", columnDefinition = "UUID")
+    private UUID userId;
 
     @Column(nullable = false, name = "full_name", length = 150)
     private String fullName;

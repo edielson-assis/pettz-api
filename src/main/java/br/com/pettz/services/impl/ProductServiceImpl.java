@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import br.com.pettz.dtos.request.ProductRequest;
@@ -54,22 +56,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse findProductByName(String product) {
-        log.info("Searching for product with name: {}", product);
-        return repository.findByNameIgnoreCase(product).map(ProductMapper::toDto).orElseThrow(() -> {
-            log.error(PRODUCT_NOT_FOUND.concat(": {}"), product);
-            return new ObjectNotFoundException(PRODUCT_NOT_FOUND);
-        });
+    public Page<ProductResponse> findProductByName(String name, Integer page, Integer size, String direction) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
+        log.info("Searching for product with name: {}", name);
+        return repository.findProductByName(name, pageable).map(ProductMapper::toDto);
     }
 
     @Override
-    public Page<ProductResponse> findAllProducts(Pageable pageable) {
+    public Page<ProductResponse> findAllProducts(Integer page, Integer size, String direction) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
         log.info("Searching all products");
         return repository.findAll(pageable).map(ProductMapper::toDto);
     }
 
     @Override
-    public Page<ProductWithIdResponse> findAllProductsWithId(Pageable pageable) {
+    public Page<ProductWithIdResponse> findAllProductsWithId(Integer page, Integer size, String direction) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+		var pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
         log.info("Searching all products");
         return repository.findAll(pageable).map(ProductMapper::toProductWithIdDto);
     }
@@ -107,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private synchronized void validateProductNotExists(Product product) {
-        boolean exists = repository.existsByNameAndIdProductNot(product.getName(), product.getIdProduct());
+        boolean exists = repository.existsByNameAndProductIdNot(product.getName(), product.getProductId());
         if (exists) {
             log.error(PRODUCT_ALREADY_EXISTS.concat(": {}"), product.getName());
             throw new ValidationException(PRODUCT_ALREADY_EXISTS);

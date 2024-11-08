@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(of = "idColor")
+@EqualsAndHashCode(of = "colorId")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -30,8 +30,8 @@ public class Color implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_color", columnDefinition = "UUID")
-    private UUID idColor;
+    @Column(name = "color_id", columnDefinition = "UUID")
+    private UUID colorId;
 
     @Column(nullable = false)
     private String color;

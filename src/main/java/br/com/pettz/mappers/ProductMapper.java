@@ -39,7 +39,7 @@ public class ProductMapper {
 
     public static ProductWithIdResponse toProductWithIdDto(Product product) {
         return ProductWithIdResponse.builder()
-                .idProduct(product.getIdProduct())
+                .idProduct(product.getProductId())
                 .code(product.getCode())
                 .name(product.getName())
                 .description(product.getDescription())

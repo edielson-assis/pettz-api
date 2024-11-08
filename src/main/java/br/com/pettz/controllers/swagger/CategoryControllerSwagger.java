@@ -2,8 +2,8 @@ package br.com.pettz.controllers.swagger;
 
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 import br.com.pettz.dtos.request.CategoryRequest;
@@ -58,7 +58,7 @@ public interface CategoryControllerSwagger {
         @ApiResponse(responseCode = "200", description = "Successful get all categories", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))})
     })
-    ResponseEntity<Page<CategoryResponse>> findAllCategories(Pageable pageable);
+    ResponseEntity<PagedModel<EntityModel<CategoryResponse>>> findAllCategories(Integer page, Integer size, String direction);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)},
@@ -71,7 +71,7 @@ public interface CategoryControllerSwagger {
             @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))}),
         @ApiResponse(responseCode = "403", description = "Forbidden - Authentication problem", content = @Content)
     })
-    ResponseEntity<Page<CategoryWithIdResponse>> findAllCategoriesWithId(Pageable pageable);
+    ResponseEntity<PagedModel<EntityModel<CategoryWithIdResponse>>> findAllCategoriesWithId(Integer page, Integer size, String direction);
 
     @Operation(
       security = {@SecurityRequirement(name = SECURITY_SCHEME_KEY)}, 

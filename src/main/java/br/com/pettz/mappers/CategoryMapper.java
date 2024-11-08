@@ -33,7 +33,7 @@ public class CategoryMapper {
 
     public static CategoryWithIdResponse toCategoryWithIdDto(Category category) {
         return CategoryWithIdResponse.builder()
-                .idCategory(category.getIdCategory())
+                .idCategory(category.getCategoryId())
                 .name(category.getName()).build();
     }
 

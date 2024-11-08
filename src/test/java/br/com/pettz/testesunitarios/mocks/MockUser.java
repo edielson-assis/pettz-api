@@ -14,7 +14,7 @@ public class MockUser {
     
     public User user() {
         User user = new User();
-        user.setIdUser(USER_ID);
+        user.setUserId(USER_ID);
         user.setFullName("Test auth");
         user.setEmail("teste@email.com");
         user.setPassword("91e2532173dc95ef503ed5ed39f7822f576a93b7c5ae41ef52b2467bd0234f089bbfd3f3f79ed7ba");
